@@ -1,0 +1,74 @@
+﻿@model List<ASimpleWebApplication.ViewModel.Task.TaskViewModel>
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    $(document).ready(function () {
+        $(".edit-button").click(function () {
+            var row = $(this).closest("tr");
+            row.find(".readonly-mode").hide();
+            row.find(".edit-mode").show();
+            row.find(".edit-button").hide();
+            row.find(".save-button").show();
+        });
+
+        $(".save-button").click(function () {
+            var row = $(this).closest("tr");
+            var newDescription = row.find(".edit-mode input").val();
+
+            $.ajax({
+                url: '@Url.Action("Dashboard", "Task")',
+                type: 'POST',
+                data: { taskId: taskId, newDescription: newDescription },
+                success: function (data) {
+                    if (data.success) {
+
+                        row.find(".readonly-mode").text(newDescription);
+                        row.find(".edit-mode").hide();
+                        row.find(".readonly-mode").show();
+                        row.find(".save-button").hide();
+                        row.find(".edit-button").show();
+                    } else {
+                        alert("An error occurred while updating the task description.");
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while communicating with the server.");
+                }
+            });
+        });
+    });
+</script>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <h2>Dashboard</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Completed</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in Model)
+            {
+            <tr>
+                <td>@task.Description</td>
+                <td>@(task.IsCompleted ? "Yes" : "No")</td>
+                <td>@Html.CheckBoxFor(t => task.IsCompleted)</td>
+                <td><button class="edit-button btn btn-primary">Edit</button></td>
+            </tr>
+            }
+
+        </tbody>
+    </table>
+</body>
+</html>
+

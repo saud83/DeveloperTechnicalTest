@@ -1,0 +1,31 @@
+﻿@model ASimpleWebApplication.ViewModel.User.UserViewModel
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body>
+    <h2>Login</h2>
+
+    @using (Html.BeginForm("Login", "User", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.userName)
+            @Html.TextBoxFor(m => m.userName, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            <label for="Password">Password</label>
+            @Html.PasswordFor(m => m.password, new { @class = "form-control" })
+        </div>
+
+        <button type="submit" class="btn btn-primary">Login</button>
+    }
+</body>
+</html>
